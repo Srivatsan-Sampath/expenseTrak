@@ -1,13 +1,37 @@
+import { useRef, useState } from "react"
 import Navbar from "./components/Navbar/Navbar"
+import { Routes, Route } from "react-router-dom"
+import { menulist } from "./setup/menulist"
+import Home from "./pages/Home.jsx"
 
 function App() {
+  const menuRef = useRef(null)
+  const [status, setStatus] = useState("false")
+  const handleClick = (e) => {
+    if (!menuRef.current.contains(e.target)) {
+      setStatus(() => {
+        "false"
+      })
+    } else {
+      setStatus((prev) => !prev)
+    }
+  }
   return (
-    <>
-      <Navbar />
-      <h1 className="text-3xl font-bold   position-absolute top-0 left-0 translate-x-1/2 translate-y-1/2">
-        Welcome to Expense Trak
-      </h1>
-    </>
+    <div className="w-screen h-screen " onClick={handleClick}>
+      <Navbar status={status} ref={menuRef} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {menulist.map((path, index) => {
+          return (
+            <Route
+              key={index}
+              path={path.linkurl}
+              element={<path.component />}
+            />
+          )
+        })}
+      </Routes>
+    </div>
   )
 }
 
